@@ -1,0 +1,33 @@
+.navlink {
+    text-decoration: none;
+    border: 10px;
+    margin: 10px;
+}
+
+.brand_pic {
+    max-width: 50px;
+    max-height: 50px;
+    align-self: center;
+    margin-top: 10px;
+}
+
+.sidebar {
+    background-color: rgb(227, 228, 228);
+    height: 100%;
+    min-height: fit-content;
+    width: 100px;
+    min-width: fit-content;
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+}
+
+.profile_pic {
+    height: 25x;
+    width: 25px;
+    border-radius: 50%;
+}
+
+.item {
+    margin-top: 25px;
+}

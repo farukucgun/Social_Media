@@ -1,0 +1,15 @@
+.post {
+    background-color: rgb(227, 228, 228);
+    list-style-type: none;
+    margin-bottom: 30px;
+    padding: 20px;
+}
+
+.likes {
+    margin: 0;
+}
+
+.post_content {
+    max-height: 500px;
+    max-width: 400px;
+}

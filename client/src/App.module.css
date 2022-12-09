@@ -1,0 +1,9 @@
+.nav {
+    height: 100%;
+    position: fixed;
+}
+
+main {
+    margin-left: 30%;
+    margin-right: 30%;
+}

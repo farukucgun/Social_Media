@@ -1,0 +1,16 @@
+.feed {
+    margin-left: 10%;    
+    width: 500px; 
+}
+
+.all_posts {
+    margin: 0;
+    padding: 0;
+}
+
+.create_post {
+    text-decoration: none;
+    border: 10px;
+    margin: 10px;
+    width: 100%;
+}
