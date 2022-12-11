@@ -6,10 +6,10 @@ import postModel from '../models/post.js';
 router.get('/', async (req, res) => {
     const posts = await postModel.find( {} ).sort({date:-1})
     .then(data => {
-        res.json({status: 'ok', data})
+        res.json({status: 200, data})
     })
     .catch(err => {
-        res.json({status: 'error', error: "Couldn't find posts"})
+        res.json({status: 500, error: "server error getting post"})
     })
 })
 
@@ -23,10 +23,10 @@ router.post('/', async (req, res) => {
     })
     await newPost.save()
     .then(data => {
-        res.json({status: 'ok', data})
+        res.json({status: 200, data})
     })
     .catch(err => {
-        res.json({status: 'error', error: "Couldn't add new post"})
+        res.json({status: 500, error: "server error adding post"})
     })
 })
 
@@ -34,10 +34,10 @@ router.post('/', async (req, res) => {
 //     const { id } = req.params;
 //     const deletedLink = await linkModel.findByIdAndDelete(id)
 //     .then(data => {
-//         res.json({status: 'ok', data})
+//         res.json({status: 200, data})
 //     })
 //     .catch(err => {
-//         res.json({status: 'error', error: "Couldn't delete link"})
+//         res.json({status: 500, error: "server error deleting post"})
 //     })
 // })
 

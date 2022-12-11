@@ -3,20 +3,24 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 import cors from "cors";
 
+// I do validation in both model with mongodb and in route with express - do I need both?
+
 import postRoute from "./routes/post.js";
+import userRoute from "./routes/user.js";
+import authRoute from "./routes/auth.js";
 
 const app = express();
 dotenv.config();
+mongoose.set('strictQuery', false);
 
 app.use(express.urlencoded({ limit:"30mb", extended: true }));
 app.use(express.json({ limit:"30mb", extended: true }));
 app.use(cors());
 
-app.get("/test", (req, res) => {
-    res.send("testing connection");
-})
 
 app.use("/post", postRoute);
+app.use("/user", userRoute);
+app.use('/auth', authRoute);
 
 const PORT = process.env.PORT || 5000;
 
