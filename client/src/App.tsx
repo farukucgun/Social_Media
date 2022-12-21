@@ -11,9 +11,12 @@
 import React from 'react';
 import { Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar/Navbar";
-import Home from "./pages/Home";
-import Chat from './pages/Chat';
-import Profile from './pages/Profile';
+import Posts from '../src/components/Post/Posts';
+import Home from './components/Auth/Home';
+import Login from './components/Auth/Login';
+import Register from './components/Auth/Register';
+import Chat from './components/Chat/Chat';
+import Profile from './components/Profile/Profile';
 import { CreatePostContextProvider } from './context/CreatePostContext';
 // import Search from "./pages/Search";
 // import Create from './pages/Create';
@@ -30,9 +33,9 @@ function App() {
       <main>
         <Routes>
           <Route path="/" element={<Home />}/>
-          {/* <Route index element={<Home />}/> */}
-          {/* <Route path="/create_post" element={<Create />} /> */}
-          {/* <Route path="/search" element={<Search />}/> */}
+          <Route path="/feed" element={<Posts />}/>
+          <Route path="/login" element={<Login />}/>
+          <Route path="/register" element={<Register />}/>
           <Route path="/chat" element={<Chat />}/>
           <Route path="/profile" element={<Profile />}/>
         </Routes>

@@ -25,9 +25,13 @@ const Navbar = () => {
         <NavLink to="/" className={classes.navlink}>Home</NavLink>
       </div>
       <div className={classes.item}>
+        <MD.MdLogin/>
+        <NavLink to="/login" className={classes.navlink}>Login</NavLink>
+      </div>
+      <div className={classes.item}>
         <MD.MdSearch/>
-        <a href="/" className={classes.navlink}>Search</a>
-        {/* <NavLink to="/search" className={classes.navlink}>Search</NavLink> */}
+        {/* <a href="/" className={classes.navlink}>Search</a> */}
+        <NavLink to="/" className={classes.navlink}>Search</NavLink>
       </div>
       <div className={classes.item}>
         <MD.MdChat/>

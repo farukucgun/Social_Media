@@ -1,9 +1,14 @@
 .nav {
     height: 100%;
     position: fixed;
+    width: 10%;
 }
 
 main {
-    margin-left: 30%;
-    margin-right: 30%;
+    display: flex;
+    margin-left: 10%;
+    justify-content: center;
+    /* margin-right: 20%; */
+    /* height: 100%; */
+    /* width: 92%; */
 }

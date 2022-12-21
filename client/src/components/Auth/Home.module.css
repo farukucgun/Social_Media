@@ -1,0 +1,23 @@
+.home_image {
+    max-height: 100%;
+    max-width: 100%;
+}
+
+.title {
+    position: absolute;
+    left: 44%;
+    top: 10%;
+}
+
+.login_inner {
+    position: absolute;
+    left: 47%;
+    top: 20%;
+    background: none;
+    padding: 5px 12px;
+}
+
+.login_outer {
+    text-decoration: none;
+    color: black;
+}
