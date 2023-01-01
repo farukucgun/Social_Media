@@ -1,9 +1,16 @@
 import React, {useState} from 'react';
-import axios from 'axios';
 import { Link } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
+import { useAppDispatch } from '../../store';
+import { setTimedAlert } from '../../features/alertSlice';
+import { registerUser } from '../../features/authSlice';
+
 import classes from "./Register.module.css";
 
 const Register = () => {
+
+    const navigate = useNavigate();
+    const dispatch = useAppDispatch();
 
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
@@ -21,31 +28,17 @@ const Register = () => {
     const submitHandler = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         if (password !== password2){
-            console.log("passwords don't match");
+            dispatch(setTimedAlert({msg: "passwords don't match", alertType: "danger", timeout: 4000}));
         }
 
         else {
-            const user = {
-                name, 
-                email,
-                password
-            }
-
-            await axios.post('http://localhost:5000/user', user)
-            .then((data) => {
-                // ctx.onLogin(data.data.id);
-                console.log("logged in")
-                console.log(data.data);
-            })
-            .catch((err) => {
-                console.log(err)
-                console.log(err.response.data.error)
-            });
+            dispatch(registerUser({name, email, password}));
             
             setName('');
             setEmail('');
             setPassword('');
             setPassword2('');
+            // navigate("/");
         }
     }
 
@@ -61,7 +54,6 @@ const Register = () => {
                         id="name"
                         placeholder="Name"
                         onChange={nameChangeHandler}
-                        required
                     />
                     <input
                         value={email} 
@@ -69,25 +61,20 @@ const Register = () => {
                         id="email"
                         placeholder="Email Adress"
                         onChange={emailChangeHandler}
-                        required
                     />
                     <input 
                         value={password}
                         type="password" 
                         id="pass" 
                         placeholder="Password"
-                        minLength={6}
                         onChange={passwordChangeHandler}
-                        required
                     />
                     <input 
                         value={password2}
                         type="password" 
                         id="pass2" 
                         placeholder="Confirm Password"
-                        minLength={6}
                         onChange={password2ChangeHandler}
-                        required
                     />
                 </div>
                 <button type='submit' className={classes.submit}>Register</button>

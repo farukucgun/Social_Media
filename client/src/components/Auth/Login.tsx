@@ -1,9 +1,17 @@
 import React, {useState} from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
+import { loginUser, logout } from '../../features/authSlice';
+import { useNavigate } from "react-router-dom";
+import { useAppDispatch } from '../../store';
+import { setTimedAlert } from '../../features/alertSlice';
+
 import classes from "./Login.module.css";
 
 const Login = () => {
+
+    const navigate = useNavigate();
+    const dispatch = useAppDispatch();
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -15,24 +23,11 @@ const Login = () => {
     const submitHandler = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
-        const user = {
-            email,
-            password
-        }
-
-        await axios.post('http://localhost:5000/auth', user)
-            .then((data) => {
-                // ctx.onLogin(data.data.id);
-                console.log("logged in")
-                console.log(data.data);
-            })
-            .catch((err) => {
-                console.log(err)
-                console.log(err.response.data.error)
-            });
-            
-            setEmail('');
-            setPassword('');
+        dispatch(loginUser({email, password}));
+        
+        setEmail('');
+        setPassword('');
+        // navigate("/");
     }
 
     return (
@@ -47,7 +42,6 @@ const Login = () => {
                         id="email"
                         placeholder="Email Adress"
                         onChange={emailChangeHandler}
-                        required
                     />
                     <input 
                         value={password}
@@ -55,7 +49,6 @@ const Login = () => {
                         id="pass" 
                         placeholder="Password"
                         onChange={passwordChangeHandler}
-                        required
                     />
                 </div>    
                 <button type='submit' className={classes.submit}>Login</button>

@@ -15,22 +15,24 @@ router.get('/', auth, async (req, res) => {
 
     await userModel.findById(req.user.id).select('-password')
     .then (data => {
-        res.send({status: 200, data: data});
+        // res.send({status: 200, data: data});
+        res.status(200).json({ data: data });
     })
     .catch (err => {
-        console.log(err);   
-        res.send({status: 500, errors: [{ msg: "Server error authenticating user" }]});
+        // res.send({status: 500, errors: [{ msg: "Server error authenticating user" }]});
+        res.status(500).json({ errors: [{ msg: "Server error authenticating user" }] });
     })
 })
 
 router.post('/', [
     check('email', 'Enter a valid email').isEmail(),
-    check('password', 'Password is required').exists()
+    check('password', 'Password is required').not().isEmpty()
     ], 
     async (req, res) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
-            return res.send({status: 400, errors: errors.array()});
+            // return res.send({status: 400, errors: errors.array()});
+            return res.status(400).json({ errors: errors.array() });
         }
 
         const { email, password } = req.body;
@@ -38,13 +40,15 @@ router.post('/', [
         const user = await userModel.findOne({email: email});
 
         if (!user) {
-            return res.send({status: 400, errors: [{ msg: "Wrong credentials" }]});
+            // return res.send({status: 400, errors: [{ msg: "Wrong credentials" }]});
+            return res.status(400).json({ errors: [{ msg: "Wrong credentials" }] });
         }
 
         const isFound = await bcrypt.compare(password, user.password)
         
         if (!isFound){
-            return res.send({status: 400, errors: [{ msg: "Wrong credentials" }]});
+            // return res.send({status: 400, errors: [{ msg: "Wrong credentials" }]});
+            return res.status(400).json({ errors: [{ msg: "Wrong credentials" }] });
         }
 
         const payload = {

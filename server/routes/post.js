@@ -6,10 +6,12 @@ import postModel from '../models/post.js';
 router.get('/', async (req, res) => {
     const posts = await postModel.find( {} ).sort({date:-1})
     .then(data => {
-        res.json({status: 200, data})
+        // res.json({status: 200, data})
+        res.status(200).json(data);
     })
     .catch(err => {
-        res.json({status: 500, error: "server error getting post"})
+        // res.json({status: 500, error: "server error getting post"})
+        res.status(500).json({ errors: [{ msg: "server error getting post" }] });
     })
 })
 
@@ -23,10 +25,12 @@ router.post('/', async (req, res) => {
     })
     await newPost.save()
     .then(data => {
-        res.json({status: 200, data})
+        // res.json({status: 200, data})
+        res.status(200).json(data);
     })
     .catch(err => {
-        res.json({status: 500, error: "server error adding post"})
+        // res.json({status: 500, error: "server error adding post"})
+        res.status(500).json({ errors: [{ msg: "server error adding post" }] });
     })
 })
 
