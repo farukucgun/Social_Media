@@ -1,10 +1,8 @@
 import React, {useState} from 'react';
-import axios from 'axios';
 import { Link } from 'react-router-dom';
-import { loginUser, logout } from '../../features/authSlice';
+import { loginUser } from '../../features/authSlice';
 import { useNavigate } from "react-router-dom";
 import { useAppDispatch } from '../../store';
-import { setTimedAlert } from '../../features/alertSlice';
 
 import classes from "./Login.module.css";
 
@@ -27,7 +25,7 @@ const Login = () => {
         
         setEmail('');
         setPassword('');
-        // navigate("/");
+        navigate("/");
     }
 
     return (

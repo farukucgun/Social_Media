@@ -1,20 +1,28 @@
-import React, {useContext} from 'react';
+import React from 'react';
 import { NavLink } from 'react-router-dom';
-
-import classes from "./Navbar.module.css";
 import * as MD from "react-icons/md";
 import * as GR from "react-icons/gr";
 import F_letter from "../../data/F_letter.jpg";
-import CreatePostContext from '../../context/CreatePostContext';
+import { logout } from '../../features/authSlice';
+import { useAppDispatch, useAppSelector } from '../../store';
+import { changeInCreatePage } from '../../features/postSlice';
+
+import classes from "./Navbar.module.css";
 
 const Navbar = () => {
-
-  const CreatePostCtx = useContext(CreatePostContext);
+  const dispatch = useAppDispatch();
 
   const createHandler = (event: React.MouseEvent<HTMLElement>) => {
     event.preventDefault();
-    CreatePostCtx.changeInCreatePage();
+    dispatch(changeInCreatePage());
   }
+
+  const logoutHandler = (event: React.MouseEvent<HTMLElement>) => {
+    event.preventDefault();
+    dispatch(logout());
+  }
+
+  const authanticated = useAppSelector(state=>state.auth.isAuthenticated);
 
   return (
     <nav className={classes.sidebar}>
@@ -25,12 +33,14 @@ const Navbar = () => {
         <NavLink to="/" className={classes.navlink}>Home</NavLink>
       </div>
       <div className={classes.item}>
-        <MD.MdLogin/>
-        <NavLink to="/login" className={classes.navlink}>Login</NavLink>
+        {authanticated ? <MD.MdLogout/> : <MD.MdLogin/>}
+        {authanticated ? 
+        <NavLink to="/" className={classes.navlink} onClick={logoutHandler}>Logout</NavLink>
+        : 
+        <NavLink to="/login" className={classes.navlink}>Login</NavLink>}
       </div>
       <div className={classes.item}>
         <MD.MdSearch/>
-        {/* <a href="/" className={classes.navlink}>Search</a> */}
         <NavLink to="/" className={classes.navlink}>Search</NavLink>
       </div>
       <div className={classes.item}>

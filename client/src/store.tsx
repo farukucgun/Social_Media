@@ -4,7 +4,7 @@ import authReducer from './features/authSlice';
 import postReducer from './features/postSlice';
 import { useDispatch, TypedUseSelectorHook, useSelector } from 'react-redux';
 
-const store = configureStore({
+export const store = configureStore({
   reducer: {
     alert: alertReducer,
     auth: authReducer,

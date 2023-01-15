@@ -13,3 +13,10 @@
     max-height: 500px;
     max-width: 400px;
 }
+
+.delete {
+    padding: 2px;
+    background-color: transparent;
+    border: none;
+    font-weight: 700;
+}

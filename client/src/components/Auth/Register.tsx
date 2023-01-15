@@ -38,7 +38,7 @@ const Register = () => {
             setEmail('');
             setPassword('');
             setPassword2('');
-            // navigate("/");
+            navigate("/");
         }
     }
 

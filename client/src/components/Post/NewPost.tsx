@@ -1,51 +1,32 @@
-import React, { useState, useContext } from "react"
-import axios from "axios";
-import classes from "./NewPost.module.css";
+import React, { useState } from "react"
 import Modal from "../../UI/Modal";
 import upload_background from "../../data/upload_background.png";
-import CreatePostContext from '../../context/CreatePostContext';
+import { useAppDispatch } from "../../store";
+import { changeInCreatePage } from "../../features/postSlice";
+import { createPostAsync } from "../../features/postSlice";
+
+import classes from "./NewPost.module.css";
 
 // add multiple images/videos
-// autocomplete
-// accept videos
+// autocomplete 
 
-interface postInterface {
-    _id: string;
-    title: string;
-    image: string;
-    vote: number;
-    user: string;
-}
-
-const NewPost = (props: {onAddPost: (data: postInterface) => void}) => {
-
-    const CreatePostCtx = useContext(CreatePostContext);
-
+const NewPost = () => {
+    const dispatch = useAppDispatch();
     const [userTitle, setUserTitle] = useState(""); 
     const [image, setImage] = useState(upload_background); 
 
     const submitHandler = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
-        const postData = {
+        const payload = {
             title: userTitle,
-            image: image,
-            user: "F@ruk"
+            image: image
         }
-
-        await axios.post('http://localhost:5000/post', postData)
-        .then((data) => {
-            props.onAddPost(data.data.data);
-            console.log("added the post");
-        })
-        .catch((err) => {
-            console.log("couldn't add the post");
-            console.log(err.message);
-        });
+        dispatch(createPostAsync(payload));
 
         setUserTitle('');
         setImage(upload_background);
-        CreatePostCtx.changeInCreatePage();
+        dispatch(changeInCreatePage());
     }
 
     const commentChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -63,10 +44,14 @@ const NewPost = (props: {onAddPost: (data: postInterface) => void}) => {
         setImage(event.target.value);
     }
 
+    const inCreatePageHandler = () => {
+        dispatch(changeInCreatePage());
+    }
+
     return (
-        <Modal onClose={CreatePostCtx.changeInCreatePage}>
+        <Modal onClose={inCreatePageHandler}>
             <form onSubmit={submitHandler} className={classes.post_form}>  
-                <button type="button" onClick={CreatePostCtx.changeInCreatePage}>X</button>
+                <button type="button" onClick={inCreatePageHandler}>X</button>
                 <input 
                     type="text" 
                     onChange={commentChangeHandler} 

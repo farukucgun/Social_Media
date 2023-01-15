@@ -99,7 +99,7 @@ export const loginUser = (payload: {email: string, password: string}) => async (
     }
     const body = {email, password};
 
-    axios.post("http://localhost:5000/auth", body, config) // something is wrong here, 400 bad request error
+    axios.post("http://localhost:5000/auth", body, config) // I guess it is normal that errors show up in the console
         .then((res) => {
             dispatch(login(res.data));
             dispatch(loadUser());
@@ -124,7 +124,7 @@ export const registerUser = (payload: {name: string, email: string, password: st
     }
     const body = JSON.stringify({name, email, password});
 
-    axios.post("http://localhost:5000/user", body, config)  // something is wrong here, 400 bad request error
+    axios.post("http://localhost:5000/user", body, config) // I guess it is normal that errors show up in the console
         .then((res) => {
             dispatch(register(res.data));
             dispatch(loadUser());
@@ -138,7 +138,6 @@ export const registerUser = (payload: {name: string, email: string, password: st
             }
             dispatch(logout());
         });
-
 }
 
 export const selectUser = (state: any) => state.auth;

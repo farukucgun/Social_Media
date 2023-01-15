@@ -20,38 +20,44 @@ const seedPosts = [
     {
         title: "Predicting The FIFA World Cup 2022 With a Simple Model using Python",
         image: "https://miro.medium.com/max/828/1*-0T6gsOd4XaTegeyak0rdQ.webp",
-        vote: 11,
-        user: "F@ruk"
+        user: "63a308823df22ff9d821debe",
+        name: "Faruk",
+        avatar: "//www.gravatar.com/avatar/a53bf39f67666698bc3241cfcef4db5c?s=200&r=pg&d=mm"
     },
     {
         title: "How to Write a Proper README.md For Your Project on GitHub",
         image: "https://miro.medium.com/max/786/1*NYiA-lZD9Py9BjgpGb66Zw.webp",
-        vote: 47,
-        user: "F@ruk"
+        user: "63b18d99fd6b481448f552fd",
+        name: "faruk2",
+        avatar: "//www.gravatar.com/avatar/4c977f82733aad411d2b3ac4e0768d93?s=200&r=pg&d=mm"
     },
     {
         title: "How To Calibrate a Camera Using Python And OpenCV",
         image: "https://miro.medium.com/max/828/0*wlveL3C-F6gkK6X-",
-        vote: 35,
-        user: "F@ruk"
+        user: "63b18d99fd6b481448f552fd",
+        name: "faruk2",
+        avatar: "//www.gravatar.com/avatar/4c977f82733aad411d2b3ac4e0768d93?s=200&r=pg&d=mm"
     },
     {
         title: "Top free Heroku alternatives for every case!",
         image: "https://miro.medium.com/max/828/1*FSkUtK8pYPBSNeaVotU4Ug.webp",
-        vote: 81,
-        user: "F@ruk"
+        user: "63a308823df22ff9d821debe",
+        name: "Faruk",
+        avatar: "//www.gravatar.com/avatar/a53bf39f67666698bc3241cfcef4db5c?s=200&r=pg&d=mm"
     },
     {
         title: "LeetCode — 21. Merge Two Sorted Lists",
         image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTGylK8VIVUlOfK0cVXVdpDwSvP0WUMpJ6HMg&usqp=CAU",
-        vote: -13,
-        user: "F@ruk"
+        user: "63b18d99fd6b481448f552fd",
+        name: "faruk2",
+        avatar: "//www.gravatar.com/avatar/4c977f82733aad411d2b3ac4e0768d93?s=200&r=pg&d=mm"
     },
     {
         title: "How to Get HTML5 Local Storage Keys with JavaScript?",
         image: "https://miro.medium.com/max/828/0*8e4jboUliVh-QhOS",
-        vote: 28,
-        user: "F@ruk"
+        user: "63a308823df22ff9d821debe",
+        name: "Faruk",
+        avatar: "//www.gravatar.com/avatar/a53bf39f67666698bc3241cfcef4db5c?s=200&r=pg&d=mm"
     }
 ]
 

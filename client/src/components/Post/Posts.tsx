@@ -1,62 +1,27 @@
-import React, {useState, useEffect, useContext} from 'react';
-import axios from "axios";
+import React, { useEffect } from 'react';
+import { fetchPostsAsync } from '../../features/postSlice';
 import Post from './Post';
-import classes from "./Posts.module.css";
 import NewPost from '../Post/NewPost';
-import CreatePostContext from '../../context/CreatePostContext';
+import { useAppSelector, useAppDispatch } from "../../store";
 
-interface postInterface {
-    _id: string;
-    title: string;
-    image: string;
-    vote: number;
-    user: string;
-}
+import classes from "./Posts.module.css";
 
 const Posts = () => {
-
-    const CreatePostCtx = useContext(CreatePostContext);
-
-    const [posts, setPosts] = useState<postInterface[]>([]);
-
-    const addPostHandler = (post: postInterface): void => {
-        setPosts((prevPosts: postInterface[]) => {
-            return [post, ...prevPosts];
-        })
-    }
+    const dispatch = useAppDispatch();
 
     useEffect(() => {
-        const fetchPosts = async () => {
-            
-            await axios.get("http://localhost:5000/post")
-            .then(data => {
-                setPosts(data.data.data);
-            })
-            .catch(err => {
-                console.log(err.message)
-                console.log("error getting posts")
-            })   
-        }
+        dispatch(fetchPostsAsync());
+    }, [dispatch]);
 
-        fetchPosts().catch((err) => {
-            console.log("couldn't fetch posts");
-            console.log(err);
-        });
-    }, []);
-
+    const inCreatePage = useAppSelector(state => state.post.inCreatePage);
+    const posts = useAppSelector(state => state.post.posts);
+    
     return (
         <div className={classes.feed}>
-            {CreatePostCtx.inCreatePage && <NewPost onAddPost={addPostHandler}/>}
+            {inCreatePage && <NewPost />}
             <ul className={classes.all_posts}>
-                {posts.map((post: postInterface) => (
-                    <Post
-                        user={post.user}
-                        key={post._id} 
-                        id={post._id}
-                        title={post.title} 
-                        image={post.image}
-                        vote={post.vote}
-                    />
+                {posts.map((post) => (
+                    <Post key={post._id} post={post} />
                 ))}
             </ul>
         </div>
