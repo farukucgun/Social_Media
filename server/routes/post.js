@@ -1,11 +1,15 @@
 import express from "express";
-const router = express.Router();
 import expressValidator from "express-validator";
-const { check, validationResult } = expressValidator;
 import auth from "../middleware/auth.js";
-
 import postModel from '../models/post.js';
 import userModel from '../models/user.js';
+import commentModel from '../models/comment.js';
+import multer from "multer";
+import { storage, cloudinary } from "../cloudinary/cloudinary.js";
+
+const router = express.Router();
+const { check, validationResult } = expressValidator;
+const upload = multer({ storage: storage });
 
 router.get('/', auth, async (req, res) => {
     await postModel.find( {} ).sort({date:-1})
@@ -28,20 +32,21 @@ router.get('/:id', auth, async (req, res) => {    // different error messages wh
     })
 })
 
-router.post('/', [auth, [
-    check('title', 'title is required').not().isEmpty(),
-    check('image', 'image is required').not().isEmpty()
-    ]],
-    async (req, res) => {
+router.post('/', [auth, upload.array('image', 5), 
+    check('title', 'title is required').not().isEmpty() ],
+    async (req, res) => { 
         const errors = validationResult(req);
+
+        if (!req.body.imageLink && !req.files) {
+            errors.errors.push({ msg: "image is required" });
+        }
         
         if (!errors.isEmpty()) {
             return res.status(400).json({ errors: errors.array() });
         }
-        const { title, image } = req.body;
+
         let name, avatar;
-        
-        const user = await userModel.findById(req.user.id).select('-password')
+        await userModel.findById(req.user.id).select('-password')
         .then(data => {
             name = data.name;
             avatar = data.avatar;
@@ -50,11 +55,24 @@ router.post('/', [auth, [
             return res.status(500).json({ errors: [{ msg: "server error finding user" }] });
         })
         
+        const { title, imageLink } = req.body;
+
+        const storeImages = [];
+        if (req.files){
+            req.files.map((file) => {
+                storeImages.push({ url: file.path, fileName: file.filename });
+            })
+        }
+
+        if (imageLink) {
+            storeImages.push({ url: imageLink, fileName: "" });
+        }
+
         const newPost = new postModel({
             title: title,
-            image: image,
-            user: req.user.id, 
-            name: name, 
+            images: storeImages,
+            user: req.user.id,
+            name: name,
             avatar: avatar
         })
 
@@ -74,6 +92,11 @@ router.delete('/:id', auth, async (req, res) => {
         if (data.user.toString() !== req.user.id) {
             return res.status(401).json({ errors: [{ msg: "user not authorized" }] });
         }
+        data.images.map((image) => {
+            if (image.fileName) {
+                cloudinary.uploader.destroy(image.fileName);
+            }
+        })
         data.remove();
         res.status(200).json({ msg: "post removed" });
     })
@@ -129,7 +152,7 @@ router.put('/downvote/:id', auth, async (req, res) => {
     }
 )})
 
-router.post('/comment/:id', [auth, [
+router.post('/comment/:id', [auth, [       
     check('text', 'text is required').not().isEmpty()
     ]],
     async (req, res) => {
@@ -138,34 +161,52 @@ router.post('/comment/:id', [auth, [
             return res.status(400).json({ errors: errors.array() });
         }
         const id = req.params.id;
+        const { text } = req.body;
         await postModel.findById(id)
         .then(data => {
-            const newComment = {
-                text: req.body.text,
-                user: req.user.id
-            }
-            data.comments.unshift(newComment);
-            data.save();
-            res.status(200).json(data);
+            const newComment = new commentModel({
+                text: text,
+                user: req.user.id,
+                name: data.name,
+                avatar: data.avatar
+            })
+            newComment.save()
+            .then(comment => {
+                data.comments.unshift(comment.id);
+                data.save();
+                res.status(200).json(data);
+            })
+            .catch(err => {
+                res.status(500).json({ errors: [{ msg: "server error saving comment" }] });
+            })
         })
         .catch(err => {
-            res.status(500).json({ errors: [{ msg: "server error commenting on post" }] });
+            res.status(500).json({ errors: [{ msg: "server error adding comment" }] });
         }
-)})
+    )
+})
 
 router.delete('/comment/:id/:comment_id', auth, async (req, res) => {
-    const id = req.params.id;
-    const comment_id = req.params.comment_id;
+    const { id, comment_id } = req.params;
     await postModel.findById(id)
     .then(data => {
-        const comment = data.comments.find(comment => comment.id === comment_id);
+        const comment = data.comments.find(comment => comment.toString() === comment_id);
         if (!comment) {
             return res.status(404).json({ errors: [{ msg: "comment not found" }] });
         }
-        if (comment.user.toString() !== req.user.id) {
-            return res.status(401).json({ errors: [{ msg: "user not authorized" }] });
-        }
-        const removeIndex = data.comments.map(comment => comment.user.toString()).indexOf(req.user.id);
+
+        commentModel.findById(comment_id)
+        .then(comment => {
+            if (comment.user.toString() !== req.user.id) {
+                return res.status(401).json({ errors: [{ msg: "user not authorized" }] });
+            }
+            comment.remove();
+        })
+        .catch(err => {
+            res.status(500).json({ errors: [{ msg: "server error deleting comment" }] });
+        })
+            
+        const removeIndex = data.comments.map(comment => comment.id).indexOf(comment_id);
         data.comments.splice(removeIndex, 1);
         data.save();
         res.status(200).json(data);

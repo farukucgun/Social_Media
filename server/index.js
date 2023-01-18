@@ -2,9 +2,6 @@ import express from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 import cors from "cors";
-
-// I do validation in both model with mongodb and in route with express - do I need both?
-
 import postRoute from "./routes/post.js";
 import userRoute from "./routes/user.js";
 import authRoute from "./routes/auth.js";

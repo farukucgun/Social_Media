@@ -11,7 +11,7 @@ const Posts = () => {
 
     useEffect(() => {
         dispatch(fetchPostsAsync());
-    }, [dispatch]);
+    }, [dispatch]);     // it seems this is safe
 
     const inCreatePage = useAppSelector(state => state.post.inCreatePage);
     const posts = useAppSelector(state => state.post.posts);

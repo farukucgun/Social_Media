@@ -7,6 +7,11 @@ import { registerUser } from '../../features/authSlice';
 
 import classes from "./Register.module.css";
 
+/**
+ * TODO: consider the errors and reset input fields accordingly
+ * TODO: navigate to home or register page depending on success
+ */
+
 const Register = () => {
 
     const navigate = useNavigate();
@@ -33,13 +38,12 @@ const Register = () => {
 
         else {
             dispatch(registerUser({name, email, password}));
-            
             setName('');
             setEmail('');
-            setPassword('');
-            setPassword2('');
             navigate("/");
         }
+        setPassword('');
+        setPassword2('');
     }
 
     return (

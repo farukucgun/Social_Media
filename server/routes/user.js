@@ -60,9 +60,9 @@ router.post('/', [
         }
 
         jwt.sign(payload, process.env.JWT_SECRET, 
-            { expiresIn: 360000 }, (err, token) => { // might want to change this later
+            { expiresIn: 1200 }, (err, token) => { // might want to change this later
                 if (err) throw err;
-                else res.send({ token }) // do I need the user id too
+                else res.send({ token }) 
         });
     }
 )

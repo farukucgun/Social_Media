@@ -7,41 +7,50 @@ import { createPostAsync } from "../../features/postSlice";
 
 import classes from "./NewPost.module.css";
 
-// add multiple images/videos
-// autocomplete 
+/**
+ * Todo: form should accept multiple videos
+ * Todo: customize the file picker
+ * Todo: use refs for inputs since I only need the values when the form is submitted
+ * I need to reset the inputs at the end though, which requires direct dom manipulation using refs
+ */
 
-const NewPost = () => {
+const NewPost = () => {         
     const dispatch = useAppDispatch();
     const [userTitle, setUserTitle] = useState(""); 
-    const [image, setImage] = useState(upload_background); 
+    const [file, setFile] = useState([]);
+    const [fileLink, setFileLink] = useState("");
+    const [imageLink, setImageLink] = useState("");             
 
     const submitHandler = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
         const payload = {
             title: userTitle,
-            image: image
+            image: file,
+            imageLink: imageLink
         }
         dispatch(createPostAsync(payload));
 
         setUserTitle('');
-        setImage(upload_background);
+        setFile([]);
+        setFileLink('');
+        setImageLink('');
         dispatch(changeInCreatePage());
     }
 
-    const commentChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const titleChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
         setUserTitle(event.target.value);
     }
 
     const uploadImageHandler = (event: any) => {
         if(event.target.files.length > 0){
-            const src = URL.createObjectURL(event.target.files[0]);
-            setImage(src);
+            setFile(event.target.files);
+            setFileLink(URL.createObjectURL(event.target.files[0]));
         }
     }
 
     const imageLinkHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setImage(event.target.value);
+        setImageLink(event.target.value);
     }
 
     const inCreatePageHandler = () => {
@@ -50,29 +59,30 @@ const NewPost = () => {
 
     return (
         <Modal onClose={inCreatePageHandler}>
-            <form onSubmit={submitHandler} className={classes.post_form}>  
+            <form onSubmit={submitHandler} className={classes.post_form} >  
                 <button type="button" onClick={inCreatePageHandler}>X</button>
                 <input 
                     type="text" 
-                    onChange={commentChangeHandler} 
+                    onChange={titleChangeHandler} 
                     placeholder='what are you thinking?'
                     value={userTitle}
                 />
-                <input 
-                    type="file" 
-                    name="img" 
+                <input                  
+                    type="file"     
+                    name="image" 
                     accept="image/png, image/jpg" 
                     onChange={uploadImageHandler}
+                    multiple={true}
                 />
                 <input 
                     type="text" 
                     onChange={imageLinkHandler}
                     placeholder='or, enter link of an image'
-                    value={image}
+                    value={imageLink}
                 />
                 <div className={classes.image_container}>
                     <img 
-                        src={image ? image : upload_background} 
+                        src={imageLink ? imageLink : (fileLink ? fileLink : upload_background)} // might want to change this
                         alt="post_to_upload"
                         className={classes.display_image} 
                         id="display_image"

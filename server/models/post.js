@@ -22,10 +22,16 @@ const postSchema = new mongoose.Schema(
             type: String,
             required: [true, "post must have a title"]
         },
-        image: {
-            type: String,
-            required: [true, "post must have an image"]
-        },
+        images: [
+            {
+                url: {
+                    type: String,
+                },
+                fileName: {
+                    type: String
+                }
+            }
+        ],    
         votes: {                 // I might put name and avatar here for quick access if I were to use them
             upvotes: [          
                 {               

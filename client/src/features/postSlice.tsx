@@ -1,6 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import { setTimedAlert } from "./alertSlice";
+import setAuthToken from "../utils/setAuthToken";
+
+/**
+ * Todo: how about a custom hook for http requests? (there's a lot of repetition)
+ */
 
 interface postInterface { 
     inCreatePage: boolean;
@@ -9,12 +14,16 @@ interface postInterface {
     loading: boolean;
     posts: {
         _id: string;
-        // id: string;
         user: string;
         name: string;
         avatar: string;
         title: string;
-        image: string;
+        images: [
+            {
+                url: string;
+                filename: string;
+            }
+        ];
         date: string;
         votes: {               
             upvotes: [          
@@ -81,11 +90,26 @@ const postSlice = createSlice({
                 posts: state.posts.map(post => post._id === action.payload.id ? action.payload : post),
                 loading: false
             }
+        },
+        addComment: (state, action) => {
+            return state = {
+                ...state,
+                posts: state.posts.map(post => post._id === action.payload.id ? action.payload : post),
+                loading: false
+            }
+        },
+        deleteComment: (state, action) => {
+            return state = {
+                ...state,
+                posts: state.posts.map(post => post._id === action.payload.id ? action.payload : post),
+                loading: false
+            }
         }
     }
 });    
 
-export const { changeInCreatePage, fetchPosts, createPost, deletePost, upvotePost, downvotePost } = postSlice.actions;
+export const { changeInCreatePage, fetchPosts, createPost, deletePost, 
+    upvotePost, downvotePost, addComment, deleteComment } = postSlice.actions;
 
 export const fetchPostsAsync = () => async (dispatch: any) => {
     await axios.get("http://localhost:5000/post")
@@ -102,16 +126,22 @@ export const fetchPostsAsync = () => async (dispatch: any) => {
     })
 }
 
-export const createPostAsync = (payload: {title: string, image: string}) => async (dispatch: any) => {
+export const createPostAsync = (payload: {title: string, image: any, imageLink: string}) => async (dispatch: any) => {
 
-    const newPost = {
-        title: payload.title,
-        image: payload.image
+    const newPost = new FormData();
+    for (let i = 0; i < payload.image.length; i++) {
+        newPost.append("image", payload.image[i]);
+    }
+    newPost.append("title", payload.title);
+    newPost.append("imageLink", payload.imageLink);
+
+    if (localStorage.token) {
+        setAuthToken(localStorage.token);
     }
     
     const config = {
         headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "multipart/form-data"
         }
     }
 
@@ -168,6 +198,50 @@ export const downvotePostAsync = (id: string) => async (dispatch: any) => {
     await axios.put(`http://localhost:5000/post/downvote/${id}`)
     .then(data => {
         dispatch(downvotePost(data.data));
+        dispatch(fetchPostsAsync());
+    })
+    .catch(err => {
+        console.log(err);
+        const errors = err.response.data.errors;
+        if (errors) {
+            errors.forEach((error: any) => {
+                dispatch(setTimedAlert({msg: error.msg, alertType: "danger", timeout: 4000}));
+            });
+        }
+    })
+}
+
+export const addCommentAsync = (id: string, text: string) => async (dispatch: any) => {
+    const config = {
+        headers: {
+            "Content-Type": "application/json"
+        }
+    }
+    
+    const body  = {
+        text: text
+    }
+
+    await axios.post(`http://localhost:5000/post/comment/${id}`, body, config)
+    .then(data => {
+        dispatch(addComment(data.data));
+        dispatch(fetchPostsAsync());
+    })
+    .catch(err => {
+        console.log(err);
+        const errors = err.response.data.errors;
+        if (errors) {
+            errors.forEach((error: any) => {
+                dispatch(setTimedAlert({msg: error.msg, alertType: "danger", timeout: 4000}));
+            });
+        }
+    })
+}
+
+export const deleteCommentAsync = (id: string, commentId: string) => async (dispatch: any) => {
+    await axios.delete(`http://localhost:5000/post/comment/${id}/${commentId}`)
+    .then(data => {
+        dispatch(deleteComment(data.data));
         dispatch(fetchPostsAsync());
     })
     .catch(err => {

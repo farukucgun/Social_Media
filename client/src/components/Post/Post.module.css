@@ -3,15 +3,29 @@
     list-style-type: none;
     margin-bottom: 30px;
     padding: 20px;
+    border-radius: 10px;
+}
+
+.main_content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.sub_post {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
 }
 
 .likes {
+    font-weight: 700;
+    font-size: 20px;
+    color: rgb(0, 0, 0);
     margin: 0;
-}
-
-.post_content {
-    max-height: 500px;
-    max-width: 400px;
 }
 
 .delete {
@@ -19,4 +33,40 @@
     background-color: transparent;
     border: none;
     font-weight: 700;
+    font-size: 20px;
+    color: rgb(255, 0, 0);
+    cursor: pointer;
+}
+
+.vote {
+    padding: 2px;
+    background-color: transparent;
+    border: none;
+    font-weight: 700;
+    font-size: 20px;
+    color: rgb(0, 0, 0);
+    cursor: pointer;
+}
+
+.comment {
+    text-decoration: none;
+    display: flex;
+    flex-direction: row;
+    padding: 2px;
+    border: none;
+}
+
+.comments {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    list-style-type: none;
+    width: 100%;
+    border: 1px solid rgb(0, 0, 0);
+    border-radius: 10px;
+    margin: 10px 10px;
+}
+
+b {
+    margin-right: 10px;
 }

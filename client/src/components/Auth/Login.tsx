@@ -6,6 +6,11 @@ import { useAppDispatch } from '../../store';
 
 import classes from "./Login.module.css";
 
+/**
+ * TODO: consider the errors and reset input fields accordingly
+ * TODO: navigate to home or login depending on success
+ */
+
 const Login = () => {
 
     const navigate = useNavigate();
@@ -21,8 +26,7 @@ const Login = () => {
     const submitHandler = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
-        dispatch(loginUser({email, password}));
-        
+        await dispatch(loginUser({email, password}));
         setEmail('');
         setPassword('');
         navigate("/");
