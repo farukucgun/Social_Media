@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import { Link } from 'react-router-dom';
 import { useNavigate } from "react-router-dom";
-import { useAppDispatch } from '../../store';
+import { useAppDispatch, useAppSelector } from '../../store';
 import { setTimedAlert } from '../../features/alertSlice';
 import { registerUser } from '../../features/authSlice';
 
@@ -9,13 +9,15 @@ import classes from "./Register.module.css";
 
 /**
  * TODO: consider the errors and reset input fields accordingly
- * TODO: navigate to home or register page depending on success
+ * TODO: consider the loading state and show a spinner
+ * TODO: consider the isAuthenticated state and redirect to home page
  */
 
 const Register = () => {
 
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
+    const { isAuthenticated } = useAppSelector(state => state.auth);
 
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
@@ -37,10 +39,13 @@ const Register = () => {
         }
 
         else {
-            dispatch(registerUser({name, email, password}));
-            setName('');
-            setEmail('');
-            navigate("/");
+            dispatch(registerUser({name, email, password}))
+            .then(() => {
+                setName('');
+                setEmail('');
+                // isAuthenticated ? navigate("/") : navigate("/register"); // this is not working
+                navigate("/");
+            })
         }
         setPassword('');
         setPassword2('');
@@ -51,36 +56,38 @@ const Register = () => {
             <h1>Sign Up</h1>
             <h3>Create Your Account</h3>
             <form action="" onSubmit={submitHandler} className={classes.register_form}>
-                <div className={classes.inputs}>
-                    <input
-                        value={name} 
-                        type="text" 
-                        id="name"
-                        placeholder="Name"
-                        onChange={nameChangeHandler}
-                    />
-                    <input
-                        value={email} 
-                        type="text" 
-                        id="email"
-                        placeholder="Email Adress"
-                        onChange={emailChangeHandler}
-                    />
-                    <input 
-                        value={password}
-                        type="password" 
-                        id="pass" 
-                        placeholder="Password"
-                        onChange={passwordChangeHandler}
-                    />
-                    <input 
-                        value={password2}
-                        type="password" 
-                        id="pass2" 
-                        placeholder="Confirm Password"
-                        onChange={password2ChangeHandler}
-                    />
-                </div>
+                <input
+                    value={name} 
+                    type="text" 
+                    id="name"
+                    placeholder="Name"
+                    onChange={nameChangeHandler}
+                    className={classes.input}
+                />
+                <input
+                    value={email} 
+                    type="text" 
+                    id="email"
+                    placeholder="Email Adress"
+                    onChange={emailChangeHandler}
+                    className={classes.input}
+                />
+                <input 
+                    value={password}
+                    type="password" 
+                    id="pass" 
+                    placeholder="Password"
+                    onChange={passwordChangeHandler}
+                    className={classes.input}
+                />
+                <input 
+                    value={password2}
+                    type="password" 
+                    id="pass2" 
+                    placeholder="Confirm Password"
+                    onChange={password2ChangeHandler}
+                    className={classes.input}
+                />
                 <button type='submit' className={classes.submit}>Register</button>
                 <p>
                     Already have an account? 

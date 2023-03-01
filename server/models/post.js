@@ -64,6 +64,10 @@ const postSchema = new mongoose.Schema(
     {collection: 'post'}
 )
 
+postSchema.virtual('voteCount').get(function() {
+    return this.votes.upvotes.length - this.votes.downvotes.length;
+})
+
 const Post = mongoose.model('Post', postSchema);
 
 export default Post;

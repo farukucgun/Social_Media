@@ -1,9 +1,11 @@
 import React from 'react';
 import * as Bs from "react-icons/bs";
 // import * as Fa from "react-icons/fa";   
-import { useAppDispatch } from '../../store';
+import { useAppDispatch, useAppSelector } from '../../store';
 import { deletePostAsync, upvotePostAsync, downvotePostAsync } from '../../features/postSlice';
+import { getProfileAsync } from '../../features/profileSlice';
 import PostContent from './PostContent';
+// import Spinner from '../UI/Spinner';
 
 import classes from "./Post.module.css";
 
@@ -49,20 +51,36 @@ const Post = (props: postInterface) => {
     const downvoteHandler = async () => {
         dispatch(downvotePostAsync(post._id));
     }
+
+    const profileHandler = async () => {
+        dispatch(getProfileAsync(post.user));
+    } 
+
     
     /**
      * TODO: display multiple videos
-     * TODO: display different icons when upvoted, downvoted, or neither
      * TODO: use cloudinary transformation api to display images in different sizes (don't request the whole image, efficiency) 
      * I could create an image schema and put that in the post model, and create a virtual for image thumbnail
      * TODO: make the posts fixed size and have the images scale to fit
+     * TODO: make spinner for loading posts
      */
+
+    const date = post.date.split("T")[0];
+    const time = post.date.split("T")[1].split(".")[0];
+
+    // if (useAppSelector(state => state.post.loading)) return Spinner;
 
     return (
         <li className={classes.post}>
-            <button className={classes.delete} onClick={deletePostHandler}>X</button>
+            <div className={classes.post_top}> 
+                <button className={classes.delete} onClick={deletePostHandler}>X</button>
+                <p>{time}, {date}</p>
+            </div>
             <div className={classes.main_content}>
-                <h4>{post.name}</h4>
+                <div className={classes.user}>
+                    <img src={post.avatar} alt="" className={classes.avatar}/>  
+                    <h4 onClick={profileHandler}>{post.name}</h4>
+                </div>
                 <h5>{post.title}</h5>
                 <PostContent images={post.images}/>
             </div>

@@ -3,16 +3,12 @@ import axios from "axios";
 import { setTimedAlert } from "./alertSlice";
 import setAuthToken from "../utils/setAuthToken";
 
-/**
- * Todo: how about a custom hook for http requests? (there's a lot of repetition)
- */
-
 interface postInterface { 
     inCreatePage: boolean;
-    // upvoted: boolean;
-    // downvoted: boolean;
     loading: boolean;
     posts: {
+        // upvoted: boolean;
+        // downvoted: boolean;
         _id: string;
         user: string;
         name: string;
@@ -39,8 +35,6 @@ interface postInterface {
 
 const initialState: postInterface = {
     inCreatePage: false,
-    // upvoted: false,
-    // downvoted: false,
     loading: true,
     posts: []
 }
@@ -55,6 +49,12 @@ const postSlice = createSlice({
                 inCreatePage: !state.inCreatePage,
                 loading: false
             } 
+        },
+        changeIsLoading: (state, action) => {
+            return state = {
+                ...state,
+                loading: action.payload 
+            }
         },
         fetchPosts: (state, action) => {
             return state = {
@@ -108,10 +108,11 @@ const postSlice = createSlice({
     }
 });    
 
-export const { changeInCreatePage, fetchPosts, createPost, deletePost, 
+export const { changeInCreatePage, changeIsLoading, fetchPosts, createPost, deletePost, 
     upvotePost, downvotePost, addComment, deleteComment } = postSlice.actions;
 
 export const fetchPostsAsync = () => async (dispatch: any) => {
+    changeIsLoading(true);
     await axios.get("http://localhost:5000/post")
     .then(data => {
         dispatch(fetchPosts(data.data));
@@ -124,10 +125,31 @@ export const fetchPostsAsync = () => async (dispatch: any) => {
             });
         }
     })
+    changeIsLoading(false);
+}
+
+/**
+ * Not used at the moment 
+ */
+export const getSinglePostAsync = (id: string) => async (dispatch: any) => {
+    changeIsLoading(true);
+    await axios.get(`http://localhost:5000/post/${id}`)
+    .then(data => {
+        dispatch(fetchPosts(data.data));
+    })
+    .catch(err => {
+        const errors = err.response.data.errors;
+        if (errors) {
+            errors.forEach((error: any) => {
+                dispatch(setTimedAlert({msg: error.msg, alertType: "danger", timeout: 4000}));
+            });
+        }
+    })
+    changeIsLoading(false);
 }
 
 export const createPostAsync = (payload: {title: string, image: any, imageLink: string}) => async (dispatch: any) => {
-
+    changeIsLoading(true);
     const newPost = new FormData();
     for (let i = 0; i < payload.image.length; i++) {
         newPost.append("image", payload.image[i]);
@@ -148,6 +170,7 @@ export const createPostAsync = (payload: {title: string, image: any, imageLink: 
     await axios.post("http://localhost:5000/post", newPost, config)
     .then(data => {
         dispatch(createPost(data.data));
+        dispatch(setTimedAlert({msg: "Post created", alertType: "success", timeout: 4000}));
     })
     .catch(err => {
         const errors = err.response.data.errors;
@@ -157,17 +180,17 @@ export const createPostAsync = (payload: {title: string, image: any, imageLink: 
             });
         }
     })
+    changeIsLoading(false);
 }
 
 export const deletePostAsync = (id: string) => async (dispatch: any) => {
+    changeIsLoading(true);
     await axios.delete(`http://localhost:5000/post/${id}`)
     .then(data => {
         dispatch(deletePost(id))
         dispatch(setTimedAlert({msg: "Post deleted", alertType: "success", timeout: 4000}));
-        dispatch(fetchPostsAsync());
     })
     .catch(err => {
-        console.log(err);
         const errors = err.response.data.errors;
         if (errors) {
             errors.forEach((error: any) => {
@@ -175,9 +198,11 @@ export const deletePostAsync = (id: string) => async (dispatch: any) => {
             });
         }
     })
+    changeIsLoading(false);
 }
 
 export const upvotePostAsync = (id: string) => async (dispatch: any) => {
+    changeIsLoading(true);
     await axios.put(`http://localhost:5000/post/upvote/${id}`)
     .then(data => {
         dispatch(upvotePost(data.data));
@@ -192,9 +217,11 @@ export const upvotePostAsync = (id: string) => async (dispatch: any) => {
             });
         }
     })
+    changeIsLoading(false);
 }
 
 export const downvotePostAsync = (id: string) => async (dispatch: any) => {
+    changeIsLoading(true);
     await axios.put(`http://localhost:5000/post/downvote/${id}`)
     .then(data => {
         dispatch(downvotePost(data.data));
@@ -209,9 +236,11 @@ export const downvotePostAsync = (id: string) => async (dispatch: any) => {
             });
         }
     })
+    changeIsLoading(false);
 }
 
 export const addCommentAsync = (id: string, text: string) => async (dispatch: any) => {
+    changeIsLoading(true);
     const config = {
         headers: {
             "Content-Type": "application/json"
@@ -225,7 +254,7 @@ export const addCommentAsync = (id: string, text: string) => async (dispatch: an
     await axios.post(`http://localhost:5000/post/comment/${id}`, body, config)
     .then(data => {
         dispatch(addComment(data.data));
-        dispatch(fetchPostsAsync());
+        // dispatch(fetchPostsAsync());
     })
     .catch(err => {
         console.log(err);
@@ -236,13 +265,15 @@ export const addCommentAsync = (id: string, text: string) => async (dispatch: an
             });
         }
     })
+    changeIsLoading(false);
 }
 
 export const deleteCommentAsync = (id: string, commentId: string) => async (dispatch: any) => {
+    changeIsLoading(true);
     await axios.delete(`http://localhost:5000/post/comment/${id}/${commentId}`)
     .then(data => {
         dispatch(deleteComment(data.data));
-        dispatch(fetchPostsAsync());
+        // dispatch(fetchPostsAsync());
     })
     .catch(err => {
         console.log(err);
@@ -253,6 +284,7 @@ export const deleteCommentAsync = (id: string, commentId: string) => async (disp
             });
         }
     })
+    changeIsLoading(false);
 }
 
 export const selectPost = (state: any) => state.post;

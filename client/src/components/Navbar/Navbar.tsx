@@ -22,7 +22,8 @@ const Navbar = () => {
     dispatch(logout());
   }
 
-  const authanticated = useAppSelector(state=>state.auth.isAuthenticated);
+  const isAuthanticated = useAppSelector(state=>state.auth.isAuthenticated);
+  const avatar = useAppSelector(state=>state.auth.user?.avatar);
 
   return (
     <nav className={classes.sidebar}>
@@ -33,28 +34,31 @@ const Navbar = () => {
         <NavLink to="/" className={classes.navlink}>Home</NavLink>
       </div>
       <div className={classes.item}>
-        {authanticated ? <MD.MdLogout/> : <MD.MdLogin/>}
-        {authanticated ? 
+        {isAuthanticated ? <MD.MdLogout/> : <MD.MdLogin/>}
+        {isAuthanticated ? 
         <NavLink to="/" className={classes.navlink} onClick={logoutHandler}>Logout</NavLink>
         : 
         <NavLink to="/login" className={classes.navlink}>Login</NavLink>}
       </div>
+      {isAuthanticated &&
+      <>
       <div className={classes.item}>
         <MD.MdSearch/>
         <NavLink to="/" className={classes.navlink}>Search</NavLink>
       </div>
       <div className={classes.item}>
         <MD.MdChat/>
-        <NavLink to="/chat" className={classes.navlink}>Chat</NavLink>
+        <NavLink to="/chats" className={classes.navlink}>Chats</NavLink>
       </div>
       <div className={classes.item}>
         <GR.GrAddCircle />
         <a href="/" className={classes.navlink} onClick={createHandler}>Create</a>
       </div>
       <div className={classes.item}>
-        <img src={F_letter} alt="" className={classes.profile_pic}/>
+        <img src={avatar} alt="" className={classes.profile_pic}/>
         <NavLink to="/profile" className={classes.navlink}>Profile</NavLink>
       </div>
+      </>}
     </nav>
   );
 }

@@ -2,15 +2,60 @@
     height: 500px;
     width: 400px;
     border: 3px solid black;
-    margin: 20px 0 20px;
+    margin: 10px 0 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: #f5f5f5;
+    border-radius: 10px;
+    padding: 20px;
 }
 
 .display_image {
     max-height: 100%;
     max-width: 100%;
-    /* object-fit: contain; */
 }
 
 .post_form {
     justify-content: center;
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    width: 80%;
+    height: 50%;
+}
+
+.input {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    width: 80%;
+    height: 40px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-top: 10px;
+}
+
+.close_button {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 10px;
+    font-size: 1.5rem;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.submit {
+    height: 40px;
+    width: 80%;
+    border-radius: 5px;
+    background-color: #3b5998;
+    color: white;
+    font-weight: bold;
+    font-size: 1.2rem;
+    border: none;
 }

@@ -99,7 +99,7 @@ export const loginUser = (payload: {email: string, password: string}) => async (
     }
     const body = {email, password};
 
-    axios.post("http://localhost:5000/auth", body, config) // I guess it is normal that errors show up in the console
+    await axios.post("http://localhost:5000/auth", body, config)
         .then((res) => {
             dispatch(login(res.data));
             dispatch(loadUser());
@@ -124,7 +124,7 @@ export const registerUser = (payload: {name: string, email: string, password: st
     }
     const body = JSON.stringify({name, email, password});
 
-    axios.post("http://localhost:5000/user", body, config) // I guess it is normal that errors show up in the console
+    await axios.post("http://localhost:5000/user", body, config)
         .then((res) => {
             dispatch(register(res.data));
             dispatch(loadUser());

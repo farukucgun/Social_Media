@@ -19,17 +19,15 @@ router.post('/', [
     async (req, res) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
-            // return res.send({status: 400, errors: errors.array()});
             return res.status(400).json({ errors: errors.array() });
         }
 
         const { name, email, password } = req.body;
 
-        const user = await userModel.findOne({email: email});
+        const user = await userModel.findOne( {$or: [{name: name}, {email: email}] } );
 
         if (user) {
-            // return res.send({status: 400, errors: [{ msg: "User with this email already exists" }]});
-            return res.status(400).json({ errors: [{ msg: "User with this email already exists" }] });
+            return res.status(400).json({ errors: [{ msg: "User already exists" }] });
         }
 
         const avatar = gravatar.url(email, {
@@ -51,7 +49,6 @@ router.post('/', [
 
         await newUser.save()
         .catch(err => {
-            // return res.send({status: 500, errors: [{ msg: "Server error creating user" }]});
             return res.status(500).json({ errors: [{ msg: "Server error creating user" }] });
         })
 

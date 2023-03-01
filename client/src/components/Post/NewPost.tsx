@@ -10,8 +10,6 @@ import classes from "./NewPost.module.css";
 /**
  * Todo: form should accept multiple videos
  * Todo: customize the file picker
- * Todo: use refs for inputs since I only need the values when the form is submitted
- * I need to reset the inputs at the end though, which requires direct dom manipulation using refs
  */
 
 const NewPost = () => {         
@@ -60,12 +58,19 @@ const NewPost = () => {
     return (
         <Modal onClose={inCreatePageHandler}>
             <form onSubmit={submitHandler} className={classes.post_form} >  
-                <button type="button" onClick={inCreatePageHandler}>X</button>
+                <button 
+                    type="button" 
+                    onClick={inCreatePageHandler}
+                    className={classes.close_button} 
+                >
+                    X
+                </button>
                 <input 
                     type="text" 
                     onChange={titleChangeHandler} 
                     placeholder='what are you thinking?'
                     value={userTitle}
+                    className={classes.input}
                 />
                 <input                  
                     type="file"     
@@ -73,12 +78,14 @@ const NewPost = () => {
                     accept="image/png, image/jpg" 
                     onChange={uploadImageHandler}
                     multiple={true}
+                    className={classes.input}
                 />
                 <input 
                     type="text" 
                     onChange={imageLinkHandler}
                     placeholder='or, enter link of an image'
                     value={imageLink}
+                    className={classes.input}
                 />
                 <div className={classes.image_container}>
                     <img 

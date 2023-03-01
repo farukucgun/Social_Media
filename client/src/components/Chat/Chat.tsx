@@ -1,8 +1,10 @@
 import React from 'react';
 
-const Chat = () => {
+const Chat = (props: {user: string}) => {
     return (
-        <h1>Chat</h1>
+        <div>
+            <h3>{props.user}: how you doin?</h3>
+        </div>
     );
 }
 

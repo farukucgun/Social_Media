@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react'
+import React from 'react'
 import { useAppSelector } from '../store';
 
 import classes from './Alert.module.css';
@@ -11,6 +11,11 @@ interface AlertInterface {
 
 const Alert = () => {
     const alerts = useAppSelector(state => state.alert.alerts);
+    // const loading = useAppSelector(state => state.post.loading);
+    // console.log(loading); // always false
+    // if (loading) {
+    //     alerts.concat({id: "loading", msg: "Loading...", alertType: "info"});
+    // }
 
     // useEffect(() => {
         

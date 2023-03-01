@@ -5,6 +5,8 @@ import cors from "cors";
 import postRoute from "./routes/post.js";
 import userRoute from "./routes/user.js";
 import authRoute from "./routes/auth.js";
+import chatRoute from "./routes/chat.js";
+// import purgePosts from "./routes/purge.js";
 
 const app = express();
 dotenv.config();
@@ -14,10 +16,12 @@ app.use(express.urlencoded({ limit:"30mb", extended: true }));
 app.use(express.json({ limit:"30mb", extended: true }));
 app.use(cors());
 
-
 app.use("/post", postRoute);
 app.use("/user", userRoute);
 app.use('/auth', authRoute);
+app.use('/chat', chatRoute);
+
+// purgePosts.invoke();
 
 const PORT = process.env.PORT || 5000;
 
